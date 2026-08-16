@@ -1,0 +1,71 @@
+# Render Blueprint — deploys the backend, a managed Postgres database, and
+# a managed Key Value (Redis) instance in one shot.
+#
+# How to use:
+#   1. Push this repo to GitHub.
+#   2. In the Render dashboard: New -> Blueprint -> select this repo.
+#   3. Render will show a review screen with every service/env var below —
+#      double check it before clicking "Apply". A few values are marked
+#      `sync: false`, meaning Render will prompt you to type them in by
+#      hand (real secrets that should never live in a committed file).
+#   4. After the Postgres database is created, open it in the Render
+#      dashboard and copy its host/port/database name. Use those to fill
+#      in DATABASE_URL on the backend service in the form:
+#        jdbc:postgresql://<host>:<port>/<database>
+#      (Render's own Postgres "connection string" is NOT in this jdbc:
+#      format, so it can't be wired automatically — this one manual step
+#      is unavoidable.)
+#   5. Once the backend is deployed, copy its https://...onrender.com URL
+#      into Frontend/.env.production (replacing the placeholder), rebuild/
+#      redeploy the frontend on Vercel, and update FRONTEND_URL below to
+#      match your real Vercel URL.
+
+services:
+  - type: web
+    name: eplatform-backend
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Backend/Dockerfile
+    dockerContext: ./Backend
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_USERNAME
+        fromDatabase:
+          name: eplatform-postgres
+          property: user
+      - key: DATABASE_PASSWORD
+        fromDatabase:
+          name: eplatform-postgres
+          property: password
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: eplatform-redis
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: FRONTEND_URL
+        value: https://ecommerce-frontend-one-theta.vercel.app
+      - key: ORDER_EXPIRATION_MINUTES
+        value: 30
+      - key: AWS_REGION
+        value: us-east-1
+      - key: AWS_S3_BUCKET
+        value: local-placeholder-bucket
+
+  - type: keyvalue
+    name: eplatform-redis
+    plan: free
+    ipAllowList: []
+
+databases:
+  - name: eplatform-postgres
+    plan: free

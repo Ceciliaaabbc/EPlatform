@@ -1,0 +1,542 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+  color: #333;
+}
+
+a {
+  color: #0077cc;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+button {
+  background: #ff5000;
+  color: white;
+  border: none;
+  padding: 9px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin: 6px;
+}
+
+button:hover {
+  background: #e64500;
+}
+
+input,
+textarea,
+select {
+  padding: 10px;
+  margin: 6px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.page {
+  padding: 30px;
+}
+
+.navbar {
+  background: #ff5000;
+  color: white;
+  padding: 16px 30px;
+  display: flex;
+  gap: 18px;
+  align-items: center;
+}
+
+.navbar a {
+  color: white;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 22px;
+  margin-top: 25px;
+}
+
+.card {
+  background: white;
+  padding: 18px;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+}
+
+.card img {
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.auth-page {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #ff5000, #ff8a00);
+}
+
+.auth-card {
+  background: white;
+  width: 380px;
+  padding: 40px;
+  border-radius: 14px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+
+.auth-card input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.auth-card button {
+  width: 100%;
+}
+
+
+.detail-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 35px;
+}
+
+/* Wrapper div controls the square shape. It's a <div>, not an <img>, so
+   the global ".card img { height: 190px; ... }" rule (meant for the small
+   product-grid thumbnails) cannot ever match it or fight over its size —
+   that selector-collision was the actual bug behind the "half the image"
+   crop, not the object-fit mode. */
+.detail-image-frame {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  aspect-ratio: 1 / 1;
+  margin: 0 auto;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f8f8f8;
+}
+
+.detail-image-frame .detail-image {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  border-radius: 12px !important;
+}
+
+.review-box {
+  margin-top: 25px;
+}
+
+.review-item {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+
+.list-card {
+  background: white;
+  padding: 18px;
+  border-radius: 12px;
+  margin-bottom: 18px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+}
+
+.admin-form {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 25px;
+}
+
+.admin-form input {
+  display: block;
+  width: 320px;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 22px;
+}
+
+@media (max-width: 768px) {
+  .detail-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-image-frame {
+    max-width: 320px;
+  }
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.admin-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.admin-product-card input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 20px;
+  background: #eee;
+  font-weight: bold;
+}
+
+.order-status-pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.order-status-paid {
+  background: #d1ecf1;
+  color: #0c5460;
+}
+
+.order-status-shipped {
+  background: #d4edda;
+  color: #155724;
+}
+
+.order-status-completed {
+  background: #d4edda;
+  color: #155724;
+}
+
+.order-status-cancelled {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.error-message {
+  color: #c0392b;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.success-message {
+  color: #27ae60;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.checkout-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 420px);
+  gap: 24px;
+  align-items: start;
+}
+
+.address-choice {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  cursor: pointer;
+}
+
+.address-choice input {
+  margin-top: 4px;
+}
+
+.inline-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px;
+}
+
+.inline-control input {
+  margin: 0;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 900px) {
+  .checkout-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  padding: 14px;
+  border-radius: 8px;
+  margin-bottom: 18px;
+}
+
+.filter-bar input,
+.filter-bar select {
+  min-width: 150px;
+}
+
+.pagination-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+
+.thumbnail-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.thumbnail-button {
+  width: 72px;
+  height: 72px;
+  padding: 2px;
+  margin: 0;
+  background: white;
+  border: 2px solid transparent;
+}
+
+.thumbnail-button.active {
+  border-color: #ff5000;
+}
+
+.thumbnail-button img,
+.admin-thumbnail {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.admin-thumbnail {
+  width: 54px;
+  height: 54px;
+}
+
+.variant-picker {
+  margin: 16px 0;
+}
+
+.variant-option {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 130px;
+  background: #fff7f2;
+  color: #333;
+  border: 1px solid #ffd0b8;
+}
+
+.variant-option.active {
+  background: #ff5000;
+  color: white;
+}
+
+.variant-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 8px;
+  align-items: center;
+  margin: 8px 0;
+}
+
+.variant-row input {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.variant-row label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin: 20px 0 28px;
+}
+
+.metric-card {
+  background: white;
+  border-radius: 10px;
+  padding: 18px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.metric-card span {
+  color: #666;
+  font-size: 14px;
+}
+
+.metric-card strong {
+  color: #222;
+  font-size: 28px;
+}
+
+.metric-card.warning strong {
+  color: #c0392b;
+}
+
+.compact-row,
+.admin-user-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.admin-user-row h3 {
+  margin: 0 0 4px;
+}
+
+/* Labeled form fields (used in admin add/edit forms so inputs are
+   identifiable even when pre-filled with a value, where a placeholder
+   would be invisible). */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+}
+
+.field input,
+.field select,
+.field textarea {
+  margin: 0;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 14px;
+  font-weight: normal;
+  color: #333;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 4px 18px;
+}
+
+.form-section {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid #eee;
+}
+
+.form-section h3 {
+  margin: 0 0 10px;
+  font-size: 15px;
+  color: #222;
+}
+
+.admin-product-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.product-image-main {
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #f0f0f0;
+}
+
+.admin-product-card .card-divider,
+.product-edit-form .card-divider {
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 16px 0;
+}
+
+.product-edit-form {
+  max-width: 640px;
+}
+
+/* Brief, clickable product summary card (Manage Products list) — shows
+   just enough to identify the product; click it to go to the full edit
+   page instead of editing everything inline in the list. */
+.admin-product-summary {
+  display: flex;
+  flex-direction: column;
+  color: inherit;
+  font-weight: normal;
+  text-decoration: none;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.admin-product-summary:hover {
+  text-decoration: none;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.admin-product-summary h3 {
+  margin: 12px 0 2px;
+  font-size: 16px;
+  color: #222;
+}
+
+.admin-product-summary-category {
+  margin: 0;
+  color: #888;
+  font-size: 13px;
+}
+
+.admin-product-summary-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.admin-product-summary-stats span:first-child {
+  font-weight: bold;
+  font-size: 16px;
+  color: #222;
+}
+
+.admin-product-summary-edit {
+  margin-top: 12px;
+  font-size: 13px;
+  color: #ff5000;
+  font-weight: bold;
+}
