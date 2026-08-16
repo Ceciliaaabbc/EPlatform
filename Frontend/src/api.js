@@ -14,6 +14,16 @@ async function parseError(response) {
   return text || `Request failed with status ${response.status}`;
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+// Render's free tier spins the backend down after ~15 min idle. The first
+// request that wakes it back up can 502/503 (or the fetch can just fail to
+// connect) for up to ~50s while the container boots. Retry a few times with
+// backoff instead of surfacing that as "failed to fetch" to the user.
+const WAKE_UP_RETRY_DELAYS_MS = [2000, 4000, 6000, 8000, 10000, 10000];
+
 export async function apiRequest(path, options = {}) {
   const token = getToken();
   const headers = { ...options.headers };
@@ -31,11 +41,36 @@ export async function apiRequest(path, options = {}) {
     headers.Authorization = "Bearer " + token;
   }
 
-  const response = await fetch(API_BASE_URL + path, {
-    ...options,
-    body,
-    headers,
-  });
+  const isRetryable = !options.method || options.method === "GET";
+
+  let response;
+  let attempt = 0;
+
+  while (true) {
+    try {
+      response = await fetch(API_BASE_URL + path, {
+        ...options,
+        body,
+        headers,
+      });
+    } catch (networkError) {
+      if (isRetryable && attempt < WAKE_UP_RETRY_DELAYS_MS.length) {
+        await sleep(WAKE_UP_RETRY_DELAYS_MS[attempt]);
+        attempt += 1;
+        continue;
+      }
+      throw networkError;
+    }
+
+    const isColdStartStatus = response.status === 502 || response.status === 503;
+    if (isColdStartStatus && isRetryable && attempt < WAKE_UP_RETRY_DELAYS_MS.length) {
+      await sleep(WAKE_UP_RETRY_DELAYS_MS[attempt]);
+      attempt += 1;
+      continue;
+    }
+
+    break;
+  }
 
   // 401 = your token is missing/invalid/expired -> force re-login.
   // 403 = you're authenticated but not allowed to do *this one thing* ->
