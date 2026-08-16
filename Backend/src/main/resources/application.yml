@@ -53,6 +53,15 @@ management:
     health:
       probes:
         enabled: true
+  health:
+    # Redis is used only as an optional cache in this app, not a hard
+    # dependency. Without this, Render's deploy health check (and any
+    # load balancer probe) reports the whole service as DOWN whenever the
+    # Redis instance is unreachable/misconfigured, even though the API,
+    # database, and everything else work fine. Keep the app's health
+    # check tied to things that actually make it non-functional.
+    redis:
+      enabled: false
 
 springdoc:
   swagger-ui:
