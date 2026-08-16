@@ -216,6 +216,10 @@ erDiagram
     PRODUCTS ||--o{ REVIEWS : reviewed_by
 ```
 
+## Running
+https://ecommerce-frontend-one-theta.vercel.app
+
+
 ## Running Locally
 
 This project lives as a single local directory (`ePlatform/`) containing two subfolders:
